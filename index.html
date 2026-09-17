@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập · Cổng nội bộ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2310262E'/%3E%3Crect x='10' y='10' width='12' height='12' rx='2' fill='%23F2A03D' transform='rotate(45 16 16)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #10262E;
+    --ink-soft:   #46626C;
+    --paper:      #E3E9E4;
+    --card:       #FFFFFF;
+    --line:       #C7D2CC;
+    --amber:      #F2A03D;
+    --amber-press:#D9861F;
+    --jade:       #26705F;
+    --alert:      #A4392B;
+
+    --radius: 16px;
+    --sans: "Be Vietnam Pro", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px 20px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Thẻ đăng nhập, tạo hình như một tấm thẻ ra vào ---------- */
+  .badge {
+    width: 100%;
+    max-width: 400px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 0 var(--line), 0 18px 40px -28px rgba(16, 38, 46, .55);
+  }
+
+  .badge__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: .01em;
+  }
+
+  .mark__dot {
+    width: 11px;
+    height: 11px;
+    background: var(--amber);
+    border-radius: 3px;
+    transform: rotate(45deg);
+  }
+
+  .badge__version {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+
+  .badge__body { padding: 28px 24px 24px; }
+
+  h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -.028em;
+    line-height: 1.1;
+  }
+
+  .lede {
+    margin: 8px 0 26px;
+    max-width: 30ch;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Trường nhập ---------- */
+  .field { margin-bottom: 16px; }
+
+  .field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
+  .field__wrap { position: relative; display: flex; }
+
+  input {
+    width: 100%;
+    padding: 11px 13px;
+    font: inherit;
+    color: var(--ink);
+    background: #FAFBFA;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+  }
+
+  input::placeholder { color: #9BAAA4; }
+
+  input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+    background: var(--card);
+  }
+
+  input[aria-invalid="true"] { border-color: var(--alert); }
+
+  .peek {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    padding: 6px 9px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: none;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .peek:hover { color: var(--ink); background: #EDF1EE; }
+  .peek:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+  /* ---------- Nút và thông báo ---------- */
+  .submit {
+    width: 100%;
+    margin-top: 22px;
+    padding: 13px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--amber);
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+  }
+
+  .submit:hover { background: var(--amber-press); }
+  .submit:active { transform: translateY(1px); }
+  .submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .status {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 13px;
+    font-size: 13.5px;
+    border-radius: 9px;
+    border-left: 3px solid;
+  }
+
+  .status[data-state="ok"]   { display: block; color: var(--jade);  background: #EAF3F0; border-color: var(--jade); }
+  .status[data-state="fail"] { display: block; color: var(--alert); background: #F8EDEB; border-color: var(--alert); }
+
+  .hint {
+    margin: 16px 0 0;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+
+  .hint code {
+    font-family: var(--mono);
+    color: var(--ink);
+  }
+
+  /* ---------- Dải nhật ký, cắt rời như cuống vé ---------- */
+  .log {
+    position: relative;
+    padding: 18px 24px 20px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .log::before,
+  .log::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    width: 19px;
+    height: 19px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+  }
+
+  .log::before { left: -10px; }
+  .log::after  { right: -10px; }
+
+  .log__title {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .log__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.75;
+  }
+
+  .log__list li {
+    display: flex;
+    gap: 8px;
+    overflow-wrap: anywhere;
+    color: var(--ink-soft);
+  }
+
+  .log__list li:first-child { color: var(--ink); }
+
+  .log__value { font-weight: 600; white-space: nowrap; }
+  .log__value[data-value="true"]  { color: var(--jade); }
+  .log__value[data-value="false"] { color: var(--alert); }
+
+  .log__empty { color: #9BAAA4; font-family: var(--mono); font-size: 11.5px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .log__list li:first-child { animation: print .22s ease-out; }
+    @keyframes print {
+      from { opacity: 0; transform: translateY(-4px); }
+    }
+  }
+
+  @media (max-width: 420px) {
+    h1 { font-size: 29px; }
+    .badge__body { padding: 24px 18px 20px; }
+    .badge__head, .log { padding-left: 18px; padding-right: 18px; }
+  }
+</style>
+</head>
+<body>
+
+  <main class="badge">
+    <div class="badge__head">
+      <span class="mark"><span class="mark__dot" aria-hidden="true"></span>Cổng nội bộ</span>
+      <span class="badge__version">v1.0.0</span>
+    </div>
+
+    <div class="badge__body">
+      <h1>Đăng nhập</h1>
+      <p class="lede">Dùng tài khoản nội bộ của bạn để vào khu vực quản trị.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="username">Tên đăng nhập</label>
+          <div class="field__wrap">
+            <input id="username" name="username" type="text" autocomplete="username"
+                   placeholder="admin" spellcheck="false" autocapitalize="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <div class="field__wrap">
+            <input id="password" name="password" type="password"
+                   autocomplete="current-password" placeholder="••••">
+            <button type="button" class="peek" id="peek" aria-controls="password" aria-pressed="false">Hiện</button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit">Đăng nhập</button>
+      </form>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+
+      <p class="hint">Tài khoản thử nghiệm: <code>admin</code> / <code>123</code></p>
+    </div>
+
+    <div class="log">
+      <p class="log__title">Nhật ký gọi hàm</p>
+      <ul class="log__list" id="log">
+        <li class="log__empty">Chưa có lượt thử nào.</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- Toàn bộ logic kiểm tra nằm trong login.js, file này cũng chính là file được unit test. -->
+  <script src="login.js"></script>
+  <script>
+    (function () {
+      var form     = document.getElementById('loginForm');
+      var userEl   = document.getElementById('username');
+      var passEl   = document.getElementById('password');
+      var statusEl = document.getElementById('status');
+      var logEl    = document.getElementById('log');
+      var peekEl   = document.getElementById('peek');
+
+      var MAX_LOG = 5;
+
+      peekEl.addEventListener('click', function () {
+        var hidden = passEl.type === 'password';
+        passEl.type = hidden ? 'text' : 'password';
+        peekEl.textContent = hidden ? 'Ẩn' : 'Hiện';
+        peekEl.setAttribute('aria-pressed', String(hidden));
+        passEl.focus();
+      });
+
+      function mask(value) {
+        return new Array(Math.min(value.length, 10) + 1).join('•');
+      }
+
+      function writeLog(username, password, value) {
+        var empty = logEl.querySelector('.log__empty');
+        if (empty) { empty.remove(); }
+
+        var item = document.createElement('li');
+        var call = document.createElement('span');
+        var out  = document.createElement('span');
+
+        call.textContent = 'checkLogin("' + username + '", "' + mask(password) + '")';
+        out.className = 'log__value';
+        out.dataset.value = String(value);
+        out.textContent = '→ ' + value;
+
+        item.append(call, out);
+        logEl.prepend(item);
+
+        while (logEl.children.length > MAX_LOG) {
+          logEl.lastElementChild.remove();
+        }
+      }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var username = userEl.value;
+        var password = passEl.value;
+
+        // login() dùng cho thông báo; checkLogin() là kết quả đúng/sai thuần tuý.
+        var result = login(username, password);
+        writeLog(username.trim(), password, checkLogin(username, password));
+
+        statusEl.dataset.state = result.ok ? 'ok' : 'fail';
+        statusEl.textContent = result.message;
+
+        userEl.setAttribute('aria-invalid', String(!result.ok));
+        passEl.setAttribute('aria-invalid', String(!result.ok));
+
+        if (result.ok) {
+          form.reset();
+          userEl.removeAttribute('aria-invalid');
+          passEl.removeAttribute('aria-invalid');
+        } else {
+          passEl.select();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

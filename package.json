@@ -1,0 +1,22 @@
+{
+  "name": "login-demo",
+  "version": "1.0.0",
+  "description": "Form đăng nhập tĩnh, hàm kiểm tra tài khoản và unit test bằng Jest.",
+  "private": true,
+  "main": "login.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "login.js"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
