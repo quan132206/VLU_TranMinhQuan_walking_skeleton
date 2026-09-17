@@ -12,7 +12,7 @@
 
 /** Tài khoản hợp lệ duy nhất của bản demo. */
 var VALID_USERNAME = 'admin';
-var VALID_PASSWORD = '1234';
+var VALID_PASSWORD = '123';
 
 /** Mã kết quả trả về của hàm login(). */
 var LOGIN_CODE = {
